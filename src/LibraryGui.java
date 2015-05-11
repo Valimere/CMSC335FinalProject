@@ -24,12 +24,6 @@ public class LibraryGui extends javax.swing.JFrame {
     public LibraryGui(Library lib) {
         initComponents();
         String mainLibrary = lib.toString();
-        //jLabel4.setText(convertToMultiline(mainLibrary));
-        //jScrollPane1.setHorizontalScrollBarPolicy(jScrollPane1.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        //jScrollPane1.setVerticalScrollBarPolicy(jScrollPane1.VERTICAL_SCROLLBAR_AS_NEEDED);
-        //jScrollPane1.setBounds(50, 30, 300, 50);
-        //jScrollPane1.scrollRectToVisible(jScrollPane1.getBounds());
-        //jScrollPane1.setAutoscrolls(rootPaneCheckingEnabled);
         jScrollPane1.setViewportView(new JLabel(convertToMultiline(mainLibrary)));
 
     }

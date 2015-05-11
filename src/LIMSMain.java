@@ -1,12 +1,9 @@
 
 /**
- * file name LIMSMain
- * date      10 May 2015
- * author    Stephen Drollinger
- * purpose   main program that actively puts data into correct Library type
+ * file name LIMSMain date 10 May 2015 author Stephen Drollinger purpose main
+ * program that actively puts data into correct Library type
  *
  */
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -24,13 +21,14 @@ public class LIMSMain {
 
     // Default constructor s
     public LIMSMain(ArrayList<String> aL1, ArrayList<String> aLO1, String fc,
-                    ArrayList<Book> bk) {
+            ArrayList<Book> bk) {
         arrayOfInput = aL1;
         arrayOfUnexpectedInput = aLO1;
         fileChoice = fc;
     }
 
     public static void main(String[] args) throws ParseException {
+
         // requesting user for input file
         System.out.println("Gethering file location from user");
         System.out.println("");
@@ -61,15 +59,16 @@ public class LIMSMain {
             System.out.println(arrayOfUnexpectedInput);
         }
 
-        // Opening LIMS GUI
+        // Opening LIMS GUI 
         LibraryGui LG = new LibraryGui(mainLibrary);
         LG.setVisible(true);
-
-
-        //System.out.println(authorSearch("John Smith"));
-
-        // ensuring program is closed
-        //System.exit(0);
+        
+        // Opening ClientGUI multiple times to show concurrency
+        for (int i = 0; i < 3; i++) {
+            Client clientLib = new Client();
+            ClientGui CG = new ClientGui(clientLib, mainLibrary);
+            CG.setVisible(true);
+        }
     }
 
     // loop to put data into the LIMS
@@ -80,6 +79,8 @@ public class LIMSMain {
             @Override
             public void run() {
 
+                // Default number of items if not specified by input file
+                int defaultInventory = 100;
 
                 // Journal Data fields
                 int journalIndex;
@@ -90,6 +91,8 @@ public class LIMSMain {
                 Calendar datePublished = GregorianCalendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
                 int journalIssue;
+                int journal_Inventory;
+                int journal_Inventory_Maximum;
 
                 // Book Data fields
                 int bookIndex;
@@ -97,6 +100,8 @@ public class LIMSMain {
                 String bookTitle;
                 String bookGenre;
                 int bookAuthor_Index;
+                int book_Inventory;
+                int book_Inventory_Maximum;
 
                 // Author Data fields
                 int authorIndex;
@@ -109,11 +114,8 @@ public class LIMSMain {
                 System.out.println("----Inputting Data into system: ----");
                 // iterating through each Array List entry
                 System.out.println("arrayOfInput's size" + arrayOfInput.size());
-                for (
-                        int i = 0;
-                        i < arrayOfInput.size(); ++i)
-
-                {
+                for (int i = 0;
+                        i < arrayOfInput.size(); ++i) {
                     // temporary String to put each line of the ArrayList to work with
                     String tempLine = arrayOfInput.get(i);
                     //System.out.println("Line being Looked at: " + tempLine);
@@ -149,16 +151,27 @@ public class LIMSMain {
                         System.out.println("bookPrice = " + bookPrice);
                         bookAuthor_Index = Integer.parseInt(list.get(5));
                         System.out.println("bookAuthor_Index = " + bookAuthor_Index);
+                        book_Inventory = Integer.parseInt(list.get(6));
+                        System.out.println("bookInventory = " + book_Inventory);
+                        // checking if inventory is specified in input file, if not using default inventory size
+                        if (list.size() >= 8) {
+                            book_Inventory_Maximum = Integer.parseInt(list.get(7));
+                            System.out.println("book Inventory maximum = " + book_Inventory_Maximum);
+                        } else {
+                            System.out.println("no book inventory max read, in using default: " + defaultInventory);
+                            book_Inventory_Maximum = defaultInventory;
+                        }
 
                         // Saving off extra fields for later inspection and possible inclusion
-                        for (int n = 6; n < list.size(); ++n) {
+                        for (int n = list.size(); n < list.size(); ++n) {
                             extrasList.add(list.get(n));
-                            System.out.println("Extra field: " + extrasList.get(n - 6));
+                            System.out.println("Extra field: " + extrasList.get(n - 7));
+                            //System.out.println("Extra item: " + extrasList.get(n - 7));
                         }
 
                         // adding book to Library
                         Book book1 = new Book(bookIndex, bookTitle, bookGenre,
-                                bookPrice, bookAuthor_Index, extrasList);
+                                bookPrice, bookAuthor_Index, book_Inventory, book_Inventory_Maximum, extrasList);
 
                         mainLibrary.getAuthorsBooks().put(bookIndex, book1);
 
@@ -180,7 +193,7 @@ public class LIMSMain {
                         System.out.println("authorAddress = " + authorAddress);
 
                         // Saving off extra fields for later inspection and possible inclusion
-                        for (int n = 4; n < list.size(); ++n) {
+                        for (int n = list.size(); n < list.size(); ++n) {
                             extrasList.add(list.get(n));
                             System.out.println("Extra field: " + extrasList.get(n - 4));
                         }
@@ -217,17 +230,29 @@ public class LIMSMain {
                         System.out.println("datePublished = " + datePublished);
                         journalIssue = Integer.parseInt(list.get(7));
                         System.out.println("journalIssue = " + journalIssue);
+                        journal_Inventory = Integer.parseInt(list.get(8));
+                        System.out.println("journalInventory = " + journal_Inventory);
+                        // checking if inventory is specified in input file, if not using default inventory size
+                        if (list.size() >= 10) {
+                            journal_Inventory_Maximum = Integer.parseInt(list.get(9));
+                            System.out.println("journal Inventory Maximum = " + journal_Inventory_Maximum);
+                        } else {
+                            System.out.println("no journal inventory max read in, using default: " + defaultInventory);
+                            journal_Inventory_Maximum = defaultInventory;
+                        }
 
                         // Saving off extra fields for later inspection and possible inclusion
-                        for (int n = 8; n < list.size(); ++n) {
+                        for (int n = list.size(); n < list.size(); ++n) {
                             extrasList.add(list.get(n));
                             System.out.println("Extra field: " + extrasList.get(n - 4));
+
                         }
 
                         System.out.println("journal date test: " + Journal.dateToString(datePublished));
 
                         // adding journal to Library
-                        Journal journal1 = new Journal(journalIndex, journalTitle, journalGenre, journalPrice, journalAuthorIndex, datePublished, journalIssue);
+                        Journal journal1 = new Journal(journalIndex, journalTitle, journalGenre, journalPrice,
+                                journalAuthorIndex, datePublished, journalIssue, journal_Inventory, journal_Inventory_Maximum);
                         System.out.println("");
                         System.out.println("testing date published isn't null" + datePublished);
                         System.out.println(journal1.toString());
@@ -254,6 +279,5 @@ public class LIMSMain {
         });
         putDataIntoLims.start();
     }
-
 
 }

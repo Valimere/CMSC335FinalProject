@@ -16,9 +16,13 @@ public class Journal {
     private int authorIndex;
     private Calendar journalDatePublished;
     private int issue;
+    private int journal_inventory;
+
+    private int journal_inventory_maximum;
 
     public Journal(int index, String title, String genre, double price,
-                   int authorIndex, Calendar journalDatePublished, int issue) {
+                   int authorIndex, Calendar journalDatePublished, int issue,
+                   int journal_inventory, int journal_inventory_maximum) {
         this.index = index;
         this.title = title;
         this.genre = genre;
@@ -26,6 +30,8 @@ public class Journal {
         this.authorIndex = authorIndex;
         this.journalDatePublished = journalDatePublished;
         this.issue = issue;
+        this.journal_inventory = journal_inventory;
+        this.journal_inventory_maximum = journal_inventory_maximum;
     }
 
     public String toString() {
@@ -33,7 +39,8 @@ public class Journal {
                 "\n" + "Genre: " + getGenre() + "\n" + "Price: $" + getPrice() +
                 "\n" + "Author Index: " + getAuthorIndex() +
                 "\n" + "Date Published: " + dateToString(getJournalDatePublished()) +
-                "\n" + "Issue: " + getIssue() + "\n";
+                "\n" + "Issue: " + getIssue() + "\n" + "Journal Inventory: " + getJournal_inventory() +
+                "\n" + "Journal Inventory Maximum: " + getJournal_inventory_maximum() +"\n";
     }
 
     /**
@@ -136,6 +143,23 @@ public class Journal {
 
     public static String dateToString(Calendar cal) {
         return cal.get(Calendar.MONTH) + 1 + "/" + cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.YEAR);
+    }
+
+
+    public int getJournal_inventory() {
+        return journal_inventory;
+    }
+
+    public void setJournal_inventory(int journal_inventory) {
+        this.journal_inventory = journal_inventory;
+    }
+
+    public int getJournal_inventory_maximum() {
+        return journal_inventory_maximum;
+    }
+
+    public void setJournal_inventory_maximum(int journal_inventory_maximum) {
+        this.journal_inventory_maximum = journal_inventory_maximum;
     }
 
 }
